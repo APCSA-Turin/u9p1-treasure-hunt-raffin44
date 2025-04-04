@@ -7,6 +7,11 @@ public class Grid{
     private int size;
 
     public Grid(int size) { //initialize and create a grid with all DOT objects
+        this.size = size;
+        this.grid = new Sprite[size][size];
+        for (int i = 0; i < size; i++)
+            for (int j = 0; j < size; j++)
+              grid[i][j] = new Dot(i, j);
     }
 
  
@@ -15,22 +20,79 @@ public class Grid{
 
 
     public void placeSprite(Sprite s){ //place sprite in new spot
-
+        grid[size - 1 - s.getY()][s.getX()] = s;
     }
 
-    public void placeSprite(Sprite s, String direction) { //place sprite in a new spot based on direction
+    public void placeSprite(Sprite s, String direction) { // place sprite in a new spot based on direction
+        for (int i = 0; i < size; i++) {
+            for (int j = 0; j < size; j++) {
+                if (grid[i][j] instanceof Player) {
+                    grid[i][j] = new Dot(i, j); // Clear previous position
+                }
+            }
+        }
+        
+        //Place the sprite first
+        placeSprite(s);
+    
+        //Initialize Dot object
+        Dot chefDot = new Dot(s.getX(), s.getY());
 
-    }
-
-
-    public void display() { //print out the current grid to the screen 
+        // Modify the Dot's position based on the movement direction
+        if (direction.equals("w")) {
+            chefDot.setY(chefDot.getY() - 1);
+        } else if (direction.equals("s")) {
+            chefDot.setY(chefDot.getY() + 1);
+        } else if (direction.equals("a")) {
+            chefDot.setX(chefDot.getX() + 1);
+        } else if (direction.equals("d")) {
+            chefDot.setX(chefDot.getX() - 1);
+     }
+    
+        // Place the dot at the modified position
+        placeSprite(chefDot);
     }
     
-    public void gameover(){ //use this method to display a loss
+
+    public void display() { //print out the current grid to the screen 
+        for (Sprite[] row : grid) {
+            for (Sprite cell : row) {
+                if (cell instanceof Player){          //checks if it is player
+                    System.out.print("🦄 ");       
+                } else if (cell instanceof Enemy){    //checks if it is enemy 
+                    System.out.print("🦂 ");
+                } else if (cell instanceof Treasure) { //checks if it is treasure
+                    System.out.print("🌈 ");
+                } else if (cell instanceof Trophy){   //checks if it is trophy
+                    System.out.print("🏆 ");
+                }else{                            
+                    System.out.print("⬜ ");   //otherwise prints dot
+                }
+            }
+            System.out.println();
+        }
     }
 
-    public void win(){ //use this method to display a win 
+    public void gameover() {  // use this method to display a loss
+        for (int i = 0; i < grid.length; i++) {
+            for (int j = 0; j < grid[0].length; j++) {
+                System.out.print("🦂 ");
+            }
+            System.out.println();
+        }
+        System.out.println("Game Over!");
     }
+    
+    public void win() {  // use this method to display a win
+        for (int i = 0; i < grid.length; i++) {
+            for (int j = 0; j < grid[0].length; j++) {
+                System.out.print("🏆 ");
+            }
+            System.out.println();
+        }
+        System.out.println("You Win!");
+    }
+    
 
 
 }

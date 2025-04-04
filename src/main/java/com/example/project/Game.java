@@ -10,6 +10,9 @@ public class Game{
     private int size; 
 
     public Game(int size){ //the constructor should call initialize() and play()
+        this.size = size;
+        initialize();
+        play();
     }
 
     public static void clearScreen() { //do not modify
@@ -29,7 +32,28 @@ public class Game{
     }
 
     public void play(){ //write your game logic here
+        grid.display();
         Scanner scanner = new Scanner(System.in);
+        while(player.getLives() > 0 && player.getTreasureCount() < 2){
+            System.out.println("Which way would you like to move?");
+            String d = scanner.nextLine();
+
+            if(d.equals("w")){
+                player.move("w");
+            }
+            if(d.equals("a")){
+                player.move("a");
+            }
+            if(d.equals("s")){
+                player.move("s");
+            }
+            if(d.equals("d")){
+                player.move("d");
+            }
+            if (player.getLives() == 0) {
+                grid.gameover();
+            } 
+        }
 
 
         while(true){
@@ -47,12 +71,26 @@ public class Game{
     }
 
     public void initialize(){
-
-        //to test, create a player, trophy, grid, treasure, and enemies. Then call placeSprite() to put them on the grid
-   
+        grid = new Grid(size);
+        player = new Player(0, 0);
+        trophy = new Trophy(9, 9);
+        enemies = new Enemy[] { new Enemy(4, 5), new Enemy(6, 3) };
+        treasures = new Treasure[] { new Treasure(2, 2), new Treasure(5, 5), new Treasure(7, 7) };
+        
+        grid.placeSprite(player);
+        grid.placeSprite(trophy);
+        for (Enemy e : enemies) {
+            grid.placeSprite(e);
+        }
+        for (Treasure t : treasures) {
+            grid.placeSprite(t);
+        }
     }
 
+        //to test, create a player, trophy, grid, treasure, and enemies. Then call placeSprite() to put them on the grid
+
     public static void main(String[] args) {
-        
+        Game Curry = new Game(10);
+        Curry.play();
     }
 }
