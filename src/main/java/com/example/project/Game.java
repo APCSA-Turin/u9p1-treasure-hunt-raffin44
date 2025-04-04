@@ -32,42 +32,91 @@ public class Game{
     }
 
     public void play(){ //write your game logic here
-        grid.display();
         Scanner scanner = new Scanner(System.in);
-        while(player.getLives() > 0 && player.getTreasureCount() < 2){
-            System.out.println("Which way would you like to move?");
-            String d = scanner.nextLine();
-
-            if(d.equals("w")){
-                player.move("w");
-            }
-            if(d.equals("a")){
-                player.move("a");
-            }
-            if(d.equals("s")){
-                player.move("s");
-            }
-            if(d.equals("d")){
-                player.move("d");
-            }
-            if (player.getLives() == 0) {
-                grid.gameover();
-            } 
-        }
-
-
-        while(true){
+        boolean toPlay = true;
+    
+        while (toPlay && player.getLives() > 0) {
             try {
                 Thread.sleep(100); // Wait for 1/10 seconds
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            clearScreen(); // Clear the screen at the beggining of the while loop
+    
+            clearScreen(); // Clear screen at the beginning of the loop
+            System.out.println();
+            grid.display();
+    
+            //Display Player Stats
+            System.out.println("Player Coordinate: " + player.getCoords());
+            System.out.println("Player Grid Position: " + player.getRowCol(size));
+            System.out.println("Number of treasures acquired: " + player.getTreasureCount());
+            System.out.println("Number of treasures needed: " + treasures.length);
+            System.out.println("Number of Lives: " + player.getLives());
+            System.out.println("Enter direction (w/a/s/d): ");
 
-     
+            //Prevent Scanner crash
+                if (!scanner.hasNextLine()) {
+                    break;  // Exit if no more input
+                }
+    
+            String direction = scanner.nextLine().toLowerCase();
+    
+            //Check if input is a valid move
+            if (direction.equals("w") || direction.equals("a") || 
+                direction.equals("s") || direction.equals("d")) {
+    
+                if (player.isValid(size, direction)) {
+                    int newX = player.getX();
+                    int newY = player.getY();
+    
+                    // Calculate new position based on movement
+                    if (direction.equals("w")) {
+                        newY++;
+                    }
+                    if (direction.equals("a")) {
+                        newX--;
+                    }
+                    if (direction.equals("s")) {
+                        newY--;
+                    }
+                    if (direction.equals("d")) {
+                        newX++;
+                    }
+    
+                    Sprite sprite = grid.getGrid()[size - 1 - newY][newX];
+                    player.interact(size, direction, treasures.length, sprite);
+    
+                    if (sprite instanceof Treasure && !(sprite instanceof Trophy)) {
+                        grid.placeSprite(new Dot(newX, newY));
+                    }
+    
+                    if (sprite instanceof Dot || sprite instanceof Enemy) {
+                        player.move(direction);
+                        grid.placeSprite(player, direction);
+                    }
+    
+                    if (sprite instanceof Trophy) {
+                        if (player.getWin()) {
+                            clearScreen();
+                            grid.win();
+                            toPlay = false;
+                            break;
+                        } else {
+                            System.out.println("Collect more treasures!");
+                        }
+                    }
+                }
             }
-            
-     
+        }   
+    
+        //Displays end-of-game message
+        clearScreen();
+        if (player.getLives() <= 0) {
+            grid.gameover();
+        } else{
+            grid.win();
+        }
+        scanner.close();  
     }
 
     public void initialize(){
