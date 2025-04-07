@@ -58,13 +58,13 @@ public class Grid{
         for (Sprite[] row : grid) {
             for (Sprite cell : row) {
                 if (cell instanceof Player){          //checks if it is player
-                    System.out.print("🦄 ");       
+                    System.out.print("👻 ");       
                 } else if (cell instanceof Enemy){    //checks if it is enemy 
                     System.out.print("🦂 ");
                 } else if (cell instanceof Treasure) { //checks if it is treasure
-                    System.out.print("🌈 ");
+                    System.out.print("🍬 ");
                 } else if (cell instanceof Trophy){   //checks if it is trophy
-                    System.out.print("🏆 ");
+                    System.out.print("🎃 ");
                 }else{                            
                     System.out.print("⬜ ");   //otherwise prints dot
                 }
@@ -76,21 +76,22 @@ public class Grid{
     public void gameover() {  // use this method to display a loss
         for (int i = 0; i < grid.length; i++) {
             for (int j = 0; j < grid[0].length; j++) {
-                System.out.print("🦂 ");
+                System.out.print("🦂 ");   //prints enemies 
             }
             System.out.println();
         }
-        System.out.println("Game Over!");
+        System.out.println("Game Over!");  //displays loss message
     }
     
     public void win() {  // use this method to display a win
         for (int i = 0; i < grid.length; i++) {
             for (int j = 0; j < grid[0].length; j++) {
-                System.out.print("🏆 ");
+                System.out.print("🎃 ");   //prints trophies 
             }
             System.out.println();
         }
-        System.out.println("You Win!");
+        System.out.print("👻 ");           //displays character next to win message
+        System.out.println("You Win!");    //displays win message
     }
     
 
